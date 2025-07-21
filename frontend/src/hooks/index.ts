@@ -21,7 +21,7 @@ export function useInfiniteScroll(
   hasMore: boolean,
   loading: boolean
 ) {
-  const observer = useRef<IntersectionObserver>();
+  const observer = useRef<IntersectionObserver | null>(null);
 
   const lastElementRef = useCallback(
     (node: HTMLDivElement) => {

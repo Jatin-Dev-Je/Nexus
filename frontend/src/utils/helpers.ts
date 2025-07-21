@@ -70,28 +70,28 @@ export function formatDate(dateString: string): string {
     } else {
       return date.toLocaleDateString();
     }
-  } catch (error) {
+  } catch {
     return 'Unknown date';
   }
 }
 
 export function truncateText(text: string, maxLength: number = 150): string {
   if (text.length <= maxLength) return text;
-  return text.substr(0, maxLength).trim() + '...';
+  return text.substring(0, maxLength).trim() + '...';
 }
 
 export function generateId(): string {
-  return Math.random().toString(36).substr(2, 9);
+  return Math.random().toString(36).substring(2, 9);
 }
 
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(null, args), wait);
+    timeout = setTimeout(() => func(...args), wait);
   };
 }
 

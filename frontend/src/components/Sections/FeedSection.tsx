@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAppSelector, useAppDispatch } from '@/hooks/redux';
 import { setFeed, addToFeed } from '@/store/slices/contentSlice';
 import { addToast } from '@/store/slices/uiSlice';
@@ -104,7 +104,10 @@ export default function FeedSection() {
   const [hasMore, setHasMore] = useState(true);
   const [mockLoading, setMockLoading] = useState(false);
   
-  const feed = useAppSelector((state: any) => state.content?.feed || []);
+  const feed = useAppSelector((state) => {
+    const contentState = (state as { content?: { feed?: ContentItem[] } }).content;
+    return contentState?.feed || [];
+  }) as ContentItem[];
 
   useEffect(() => {
     // Simulate API calls with mock data
@@ -149,14 +152,14 @@ export default function FeedSection() {
     loadMockData();
   }, [page, dispatch]);
 
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     if (!mockLoading && hasMore) {
       setPage(prev => prev + 1);
       if (page >= 2) {
         setHasMore(false);
       }
     }
-  };
+  }, [mockLoading, hasMore, page]);
 
   // Simple scroll listener for infinite scroll
   useEffect(() => {
@@ -171,7 +174,7 @@ export default function FeedSection() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [mockLoading, hasMore]);
+  }, [loadMore]);
 
   return (
     <div className="space-y-6">
@@ -197,7 +200,7 @@ export default function FeedSection() {
 
       {!hasMore && feed.length > 0 && (
         <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-          <p>🎉 You've reached the end of your feed</p>
+          <p>🎉 You&apos;ve reached the end of your feed</p>
           <p className="text-sm mt-2">Check back later for more updates!</p>
         </div>
       )}

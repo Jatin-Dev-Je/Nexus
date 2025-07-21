@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useAppDispatch } from '@/hooks/redux';
 import { addToFavorites, removeFromFavorites } from '@/store/slices/contentSlice';
-import { ContentItem } from '@/types';
+import { ContentItem, NewsArticle, Movie } from '@/types';
 import { formatDate, truncateText, getImageWithFallback } from '@/utils/helpers';
 import { motion } from 'framer-motion';
 import { 
@@ -119,9 +120,11 @@ export default function ContentCard({ item, index, isDragging = false }: Content
     >
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
-        <img
+        <Image
           src={imageError ? '/placeholder-image.jpg' : getImageWithFallback(item.imageUrl, '/placeholder-image.jpg')}
           alt={item.title}
+          width={400}
+          height={192}
           className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           onError={() => setImageError(true)}
         />
@@ -166,16 +169,16 @@ export default function ContentCard({ item, index, isDragging = false }: Content
             <span>{formatDate(item.timestamp)}</span>
           </div>
           
-          {item.type === 'news' && (item.data as any).source && (
+          {item.type === 'news' && (item.data as NewsArticle).source && (
             <div className="flex items-center">
               <FiUser className="w-3 h-3 mr-1" />
-              <span>{(item.data as any).source.name}</span>
+              <span>{(item.data as NewsArticle).source.name}</span>
             </div>
           )}
 
           {item.type === 'movie' && (
             <div className="flex items-center">
-              <span>⭐ {((item.data as any).vote_average || 0).toFixed(1)}</span>
+              <span>⭐ {((item.data as Movie).vote_average || 0).toFixed(1)}</span>
             </div>
           )}
         </div>

@@ -11,7 +11,6 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { darkMode } = useAppSelector((state) => state.user.preferences);
-  const { sidebarOpen } = useAppSelector((state) => state.ui);
 
   useEffect(() => {
     if (darkMode) {

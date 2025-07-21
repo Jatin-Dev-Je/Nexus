@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useAppSelector, useAppDispatch } from '@/hooks/redux';
-import { useSearchNewsQuery, useSearchMoviesQuery } from '@/store/api/contentApi';
 import { setSearchResults, resetSearch } from '@/store/slices/contentSlice';
 import { closeSearchModal } from '@/store/slices/uiSlice';
 import { useDebounce, useClickOutside } from '@/hooks';
@@ -17,49 +16,80 @@ export default function SearchModal() {
   const modalRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'news' | 'movies'>('all');
+  const [isLoading, setIsLoading] = useState(false);
   
   const { searchModalOpen } = useAppSelector((state) => state.ui);
   const { searchResults } = useAppSelector((state) => state.content);
   
   const debouncedQuery = useDebounce(query, 300);
 
-  const { data: newsResults, isLoading: newsLoading } = useSearchNewsQuery(
-    { q: debouncedQuery },
-    { skip: !debouncedQuery || activeFilter === 'movies' }
-  );
-
-  const { data: movieResults, isLoading: moviesLoading } = useSearchMoviesQuery(
-    { q: debouncedQuery },
-    { skip: !debouncedQuery || activeFilter === 'news' }
-  );
-
-  const isLoading = newsLoading || moviesLoading;
-
-  useClickOutside(modalRef, () => {
+  useClickOutside(modalRef as React.RefObject<HTMLElement>, () => {
     if (searchModalOpen) {
       handleClose();
     }
   });
 
   useEffect(() => {
-    if (debouncedQuery && (newsResults || movieResults)) {
-      const combinedResults = [];
+    if (debouncedQuery) {
+      setIsLoading(true);
+      
+      // Mock search with delay
+      const searchWithMockData = async () => {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const combinedResults = [];
 
-      if (newsResults?.articles && activeFilter !== 'movies') {
-        const newsItems = newsResults.articles.map(transformNewsToContentItem);
-        combinedResults.push(...newsItems);
-      }
+        if (activeFilter !== 'movies') {
+          // Mock news search results
+          const mockNewsResults = [{
+            id: `search-news-${Date.now()}`,
+            title: `News about ${debouncedQuery}`,
+            description: `Latest news and updates about ${debouncedQuery}`,
+            content: `Detailed content about ${debouncedQuery}...`,
+            url: `https://example.com/news/${debouncedQuery}`,
+            urlToImage: 'https://picsum.photos/400/200',
+            publishedAt: new Date().toISOString(),
+            source: { id: 'search-source', name: 'Search News' },
+            author: 'News Reporter',
+            category: 'general',
+          }];
+          
+          const newsItems = mockNewsResults.map(transformNewsToContentItem);
+          combinedResults.push(...newsItems);
+        }
+        if (activeFilter !== 'news') {
+          // Mock movie search results
+          const mockMovieResults = [{
+            id: Date.now(),
+            title: `${debouncedQuery} Movie`,
+            overview: `A movie about ${debouncedQuery}`,
+            poster_path: '/placeholder-movie.jpg',
+            backdrop_path: '/placeholder-backdrop.jpg',
+            release_date: '2023-01-01',
+            vote_average: 7.5,
+            vote_count: 1000,
+            popularity: 50.0,
+            adult: false,
+            genre_ids: [28, 12],
+            original_language: 'en',
+            original_title: `${debouncedQuery} Movie`,
+            video: false,
+          }];
+          
+          const movieItems = mockMovieResults.map(transformMovieToContentItem);
+          combinedResults.push(...movieItems);
+        }
 
-      if (movieResults?.results && activeFilter !== 'news') {
-        const movieItems = movieResults.results.map(transformMovieToContentItem);
-        combinedResults.push(...movieItems);
-      }
-
-      dispatch(setSearchResults(combinedResults));
+        dispatch(setSearchResults(combinedResults));
+        setIsLoading(false);
+      };
+      
+      searchWithMockData();
     } else {
       dispatch(setSearchResults([]));
+      setIsLoading(false);
     }
-  }, [newsResults, movieResults, activeFilter, debouncedQuery, dispatch]);
+  }, [activeFilter, debouncedQuery, dispatch]);
 
   const handleClose = () => {
     dispatch(closeSearchModal());
@@ -154,14 +184,14 @@ export default function SearchModal() {
             ) : query && searchResults.length > 0 ? (
               <div className="space-y-4">
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Found {searchResults.length} results for "{query}"
+                  Found {searchResults.length} results for &quot;{query}&quot;
                 </div>
                 <ContentGrid items={searchResults.slice(0, 12)} columns={3} />
               </div>
             ) : query ? (
               <div className="text-center py-12">
                 <div className="text-gray-500 dark:text-gray-400">
-                  No results found for "{query}"
+                  No results found for &quot;{query}&quot;
                 </div>
               </div>
             ) : (

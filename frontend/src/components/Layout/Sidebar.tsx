@@ -9,11 +9,8 @@ import {
   FiTrendingUp, 
   FiHeart, 
   FiSettings, 
-  FiSearch,
-  FiMenu,
   FiMoon,
-  FiSun,
-  FiBell
+  FiSun
 } from 'react-icons/fi';
 
 export default function Sidebar() {

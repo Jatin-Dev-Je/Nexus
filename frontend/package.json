@@ -9,10 +9,7 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:e2e": "cypress run",
-    "test:e2e:open": "cypress open",
-    "test:all": "npm run test && npm run test:e2e"
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -35,7 +32,6 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "cypress": "^13.15.2",
     "eslint": "^9",
     "eslint-config-next": "15.4.2",
     "jest": "^30.0.4",

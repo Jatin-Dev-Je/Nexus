@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppSelector, useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch } from '@/hooks/redux';
 import { reorderFeed } from '@/store/slices/contentSlice';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import ContentCard from './ContentCard';

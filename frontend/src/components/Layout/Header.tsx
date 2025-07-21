@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useAppSelector, useAppDispatch } from '@/hooks/redux';
 import { useDebounce } from '@/hooks';
-import { toggleSidebar, openSearchModal } from '@/store/slices/uiSlice';
+import { toggleSidebar } from '@/store/slices/uiSlice';
 import { setSearchFilters } from '@/store/slices/contentSlice';
-import { motion } from 'framer-motion';
 import { 
   FiMenu, 
   FiSearch, 
@@ -17,7 +17,6 @@ import {
 export default function Header() {
   const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState('');
-  const { sidebarOpen } = useAppSelector((state) => state.ui);
   const { profile, isAuthenticated } = useAppSelector((state) => state.user);
   
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -80,9 +79,11 @@ export default function Header() {
             {isAuthenticated && profile ? (
               <button className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 {profile.avatar ? (
-                  <img
+                  <Image
                     src={profile.avatar}
                     alt={profile.name}
+                    width={32}
+                    height={32}
                     className="w-8 h-8 rounded-full"
                   />
                 ) : (

@@ -128,10 +128,14 @@ export default function TrendingSection() {
       // Sort by trending score (higher vote_average and popularity for movies, recent for news)
       const sortedTrending = trendingContent.sort((a, b) => {
         if (a.type === 'movie' && b.type === 'movie') {
-          return (b.metadata?.vote_average || 0) - (a.metadata?.vote_average || 0);
+          const aMovie = a.data as Movie;
+          const bMovie = b.data as Movie;
+          return (bMovie.vote_average || 0) - (aMovie.vote_average || 0);
         }
         if (a.type === 'news' && b.type === 'news') {
-          return new Date(b.publishedAt || 0).getTime() - new Date(a.publishedAt || 0).getTime();
+          const aNews = a.data as NewsArticle;
+          const bNews = b.data as NewsArticle;
+          return new Date(bNews.publishedAt || 0).getTime() - new Date(aNews.publishedAt || 0).getTime();
         }
         // Mix movies and news
         return Math.random() - 0.5;
@@ -202,7 +206,7 @@ export default function TrendingSection() {
           <div className="flex items-center space-x-3">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
             <div className="text-gray-600 dark:text-gray-400">
-              <p className="font-medium">Finding what's trending...</p>
+              <p className="font-medium">Finding what&apos;s trending...</p>
               <p className="text-sm">Analyzing popular content</p>
             </div>
           </div>
