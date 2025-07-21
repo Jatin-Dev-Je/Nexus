@@ -1,0 +1,34 @@
+{
+  "name": "nexus-backend",
+  "version": "0.1.0",
+  "description": "Backend API for Nexus Content Dashboard",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "node --watch src/app.js",
+    "start": "node src/app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "echo 'Build script coming soon'",
+    "setup:db": "echo 'Database setup coming soon'"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "api",
+    "typescript",
+    "content-dashboard"
+  ],
+  "author": "Nexus Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "@types/node": "^20.10.0"
+  }
+}
